@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block start %}
+<h1>Form</h1>
+{{thisUid}}
+</p>
+<div class="container mt-5">
+    <form class="col-lg-6 mx-auto card p-3 shadow-lg" method="post">
+        {%csrf_token%}
+    {% for question in ques %}
+    
+    {%if question.ansType == 'Multiple Choice' %}
+    
+    <div class="mb-3">
+        <label for="multipleChoice" class="form-label" >{{question.question}}</label>
+        <select class="form-select" aria-label="Multiple Choice Question" name="{{question.id}}" id="multipleChoice">
+            <option selected>Choose an option</option>
+        {% for opt in question.options %}
+        <div class="form-check">
+            <option name="{{opt}}">{{opt}}</option>
+              
+            </label>
+          </div>
+        {% endfor %}
+        </select>
+    </div>
+    {%endif %}
+    <div class="mb-3">
+    {%if question.ansType == 'Text Answer' %}
+    
+    
+        <label for="textQuestion" class="form-label">{{question.question}}</label>
+        <input type="text" class="form-control" id="textQuestion" name="{{question.id}}" placeholder="Enter your answer">
+      
+
+
+
+    {%endif%}
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary" name="action" value="submit">Submit</button>
+</form>
+<div class="col-lg-2 mx-auto card  m-3 shadow-lg">
+
+</div>
+</div>
+{% endblock %}

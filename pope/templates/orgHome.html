@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block start %}
+<h1>Home</h1>
+< class="mx-auto card shadow-lg">
+    {% if user.is_authenticated %}
+  Welcome  {{request.user}} you can now choose fields in which you can create form for data ...
+  {% else %}
+  You are not logged in.
+  {% endif %}
+</p>
+<div class="container mt-5">
+  <form class="col-6 mx-auto card p-3 shadow-lg" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="Question" class="form-label">Enter Question</label>
+      <input type="text" class="form-control" id="ques" name="question">
+    </div>
+    <div class="mb-3">
+      <label for="Answer Type" class="form-label">Enter Answer Type</label>
+      <select class="form-select" aria-label="Default select example" name="ansType" id="ansTypeSelect">
+        <option selected>Choose</option>
+        <option value="Text Answer">Text Answer</option>
+        <option value="Multiple Choice">Multiple Choice (4 options)</option>
+      </select>
+      
+      <div id="optionsField" style="display: none;">
+       
+        
+        <div name ="options">Enter options (one per line):</br></div>
+        <button type="button" onclick="addOption()" class="btn btn-success btn-sm m-2" name="addOptions">Add Option</button >
+
+        
+      </div>
+      
+      <script>
+        const ansTypeSelect = document.getElementById('ansTypeSelect');
+        const optionsField = document.getElementById('optionsField');
+      
+        ansTypeSelect.addEventListener('change', function () {
+          if (ansTypeSelect.value === 'Multiple Choice') {
+            optionsField.style.display = 'block';
+          } else {
+            optionsField.style.display = 'none';
+          }
+        });
+      
+        function addOption() {
+            const optionsContainer = document.querySelector('div[name="options"]');
+            const newOption = document.createElement('div');
+            newOption.classList.add('input-group', 'mb-2');
+          
+            const optionInput = document.createElement('input');
+            optionInput.type = 'text';
+            optionInput.name = 'option';
+            optionInput.placeholder = 'Enter an option';
+            optionInput.classList.add('form-control');
+            newOption.appendChild(optionInput);
+          
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.textContent = 'Remove Option';
+            removeButton.classList.add('btn', 'btn-danger', 'btn-sm', 'm-2');
+            removeButton.onclick = function () {
+              newOption.remove();
+            };
+            newOption.appendChild(removeButton);
+          
+            optionsContainer.appendChild(newOption);
+          }
+          
+      </script>
+      
+
+    </div>
+    <button type="submit" class="btn btn-primary" name="action" value="submit1">Submit</button>
+  </form>
+
+  <h1>Questions</h1>
+
+  {% if ques %}
+    {% for question in ques %}
+      <div class="col-6 mx-auto card p-3 shadow-lg">
+        <div class="card">
+          <strong>{{forloop.counter}}. Question:</strong> {{ question.question }}
+        </div>
+        
+          <strong>Answer Type:</strong> {{ question.ansType }}
+        
+        
+            <strong>Options:</strong>
+          <ul class="list-group m-2">
+          {% for opt in question.options %}
+          <li class="list-group-item">{{opt}}</li>
+          {% endfor %}
+          </ul>
+          <a href="/delete-question/{{question.id}}/" class="btn btn-danger m-
+          2 btn-sm">Delete</a>
+        
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No questions found.</p>
+  {% endif %}
+
+
+  <p>when u have completed the choice of questions:</p>
+  <a href="/orgForm/{{form_uid}}" class="btn-danger mx-auto card btn  m-2 btn-sm col-6  ">View my form</a>
+
+
+</div>
+{% endblock %}
